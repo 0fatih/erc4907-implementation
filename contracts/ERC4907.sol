@@ -7,7 +7,7 @@ import "./IERC4907.sol";
 contract ERC4907 is ERC721, IERC4907 {
     // Custom errors
     error CanNotRentToZeroAddress();
-    error OnlyOwnerCanSetUser();
+    error NotOwnerOrApproved();
     error InvalidExpire();
 
     struct TenantInfo {
@@ -30,7 +30,7 @@ contract ERC4907 is ERC721, IERC4907 {
         address tenant,
         uint64 expires
     ) public {
-        if (ownerOf(tokenId) != msg.sender) revert OnlyOwnerCanSetUser();
+        if (ownerOf(tokenId) != msg.sender && getApproved(tokenId) != msg.sender) revert NotOwnerOrApproved();
 
         if (tenant == address(0)) revert CanNotRentToZeroAddress();
 
